@@ -1,27 +1,30 @@
-// Where profile information will appear
+// Div where profile information will appear
 const overview = document.querySelector(".overview");
 // Me :)
 const username = "ctay1or";
 // UL containing repos list
 const repoList = document.querySelector(".repo-list");
+// Section where all repo info appears
+const allReposContainer = document.querySelector(".repos");
+// Section where individual repo data will appear
+const repoData = document.querySelector(".repo-data");
 
 
-// Fetch API JSON data
-const getData = async function () {
-    const response = await fetch(`https://api.github.com/users/${username}`
+// Fetch API JSON user data
+const gitUserInfo = async function () {
+    const userInfo = await fetch(`https://api.github.com/users/${username}`
     );
-    const data = await response.json();
-    console.log(data);
+    const data = await userInfo.json();
 
     // Display the data result in browser
-    displayData(data);
+    displayUserInfo(data);
 };
 
-getData();
+gitUserInfo();
 
 
-// Fetch and display user info
-const displayData = function (data) {
+// Display user info
+const displayUserInfo = function (data) {
     // Create a div for the user info to live in
     const div = document.createElement("div");
     div.classList.add("user-info");
@@ -46,14 +49,11 @@ const displayData = function (data) {
 
 // Fetch the repos
 const gitRepos = async function () {
-    const res = await fetch(
-        "https://api.github.com/users/ctay1or/repos?sort=updated&per_page=100"
-    );
-    const repos = await res.json();
-    console.log(repos);
+    const fetchRepos = await fetch("https://api.github.com/users/ctay1or/repos?sort=updated&per_page=100");
+    const repoData = await fetchRepos.json();
 
     //display repos
-    displayRepos(repos);
+    displayRepos(repoData);
 };
 
 
@@ -66,3 +66,23 @@ const displayRepos = function (repos) {
         repoList.append(li);
     }
 };
+
+
+// Click event targeting specific repo
+repoList.addEventListener("click", function (e) {
+    if (e.target.matches("h3")) {
+        const repoName = e.target.innerText;
+        getRepoInfo(repoName);
+    }
+});
+
+
+// Fetching specific repo info
+const getRepoInfo = async function (repoName) {
+    const fetchInfo = await fetch(`https://github.com/users/ctay1or/repos/${username}/${repoName}`);
+    const repoInfo = await fetchInfo.json();
+    console.log(repoInfo);
+};
+
+
+
